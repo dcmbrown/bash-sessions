@@ -1,0 +1,48 @@
+#####################################################################
+# Purpose: Keep track of user, sudo and root command history.
+#####################################################################
+
+shopt -s cmdhist
+shopt -s histappend
+export HISTCONTROL=
+export HISTIGNORE=
+export HISTSIZE=10000
+export HISTFILESIZE=20000
+
+# For normal users us ~/.bash_history File and allow changes to bash history variables
+# if user is root...
+#     - Send commands to secondary logging.
+#     - Send commands to a user specific bash history file.
+#     - Make bash history variables read only.
+
+if [ "$USER" != "root" ]
+then
+     # Set regular user bash history file and command prompt
+     #
+     export HISTFILE=~/.bash_history
+     export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+else
+     export HISTTIMEFORMAT="%F %T: "
+     # Set root bash history file and command prompt to allow to send commands to
+     # secondary logging and make variables read only.
+     #
+     # Make sure the command trace directory exists and that it has the proper access.
+     if [ ! -d /root/.bash_sessions ]
+     then
+          mkdir -m 640 /root/.bash_sessions
+     else
+          chmod 640 /root/.bash_sessions
+     fi
+     # Set and Export root bash history variables.
+     export HISTFILE=/root/.bash_sessions/.history_`who am i|awk '{ print $1}'`
+     export PROMPT_COMMAND="history -a >(tee -a $HISTFILE | logger -pauthpriv.info -t 'user=`who am i | awk '{ print $1}'` as_user=$USER proc=$$ connection=`echo $(tty)| sed -e "s:/dev/::"` cmd=');$PROMPT_COMMAND"
+     # Make some variables read only to make it a bit harder to bypass history logging.
+     typeset -r HISTCONTROL
+     typeset -r HISTFILE
+     typeset -r HISTFILESIZE
+     typeset -r HISTIGNORE
+     typeset -r HISTSIZE
+     typeset -r HISTTIMEFORMAT
+     typeset -r PROMPT_COMMAND
+fi
+# vim:ts=4:sw=4
