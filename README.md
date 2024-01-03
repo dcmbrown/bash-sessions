@@ -8,4 +8,6 @@ Add this to your .bashrc, .bash_profile, or .profile after any system bash impor
 
       source ~/.bash_sessions
 
-This will create a directory for sessions to be stored. Subsequent sessions will show up under `~/.bash_sessions.d/history_<username>-[pt]ty[n]`
+This will create a directory for sessions to be stored. Subsequent sessions will show up under 
+
+`~/.bash_sessions.d/history_<username>-[pt]ty[n]`
