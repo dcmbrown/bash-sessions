@@ -12,8 +12,8 @@ export HISTFILESIZE=20000
 # For normal users us ~/.bash_history File and allow changes to bash history variables
 # if user is root...
 #     - Send commands to secondary logging.
-#     - Send commands to a user specific bash history file.
-#     - Make bash history variables read only.
+#     - Send commands to a user and tty specific bash history file.
+#     - Make bash history variables read only if root
 
 # originally just for root but testing it elsewhere
 #if [ "$USER" == "root" ]
@@ -30,9 +30,9 @@ export HISTFILESIZE=20000
      # Make sure the command trace directory exists and that it has the proper access.
      if [ ! -d ~/.bash_sessions.d ]
      then
-          mkdir -m 640 ~/.bash_sessions.d
+          mkdir -m 750 ~/.bash_sessions.d
      else
-          chmod 640 ~/.bash_sessions.d
+          chmod 750 ~/.bash_sessions.d
      fi
      # Set and Export root bash history variables.
      export HISTFILE=~/.bash_sessions.d/.history_`who am i | awk '{gsub(/\//, "", $2)} { print $1 "-" $2 }'`
