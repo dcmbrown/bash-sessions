@@ -1,8 +1,10 @@
-### *Bash Environment Sessions Addition*
+### *_Bash Environment Sessions Addition_*
 
-This is a bash sessions tracker for users who regularly sudoed into, run multiple terminal sessions at once, or are root.
+*based on*: Did not originally create this but have not yet tracked down who did.
 
-#### *USE*
+This is a bash sessions tracker for users who regularly sudoed into, run multiple terminal sessions at once, or are root.  
+
+#### *_USE_*
 Add the bash_sessions file to the home directory of the user to track history sessions of better as `.bash_sessions` (or where ever you may put extra config files for bash such as `.bash.d/` or `.dotenv/`.
 Add this to your .bashrc, .bash_profile, or .profile after any system bash imports and any other HISTORY exports in order enable this.
 
