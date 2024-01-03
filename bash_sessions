@@ -15,26 +15,27 @@ export HISTFILESIZE=20000
 #     - Send commands to a user specific bash history file.
 #     - Make bash history variables read only.
 
-if [ "$USER" != "root" ]
-then
-     # Set regular user bash history file and command prompt
-     #
-     export HISTFILE=~/.bash_history
-     export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
-else
+# originally just for root but testing it elsewhere
+#if [ "$USER" == "root" ]
+#then
+#     # Set regular user bash history file and command prompt
+#     #
+#     export HISTFILE=~/.bash_history
+#     export PROMPT_COMMAND="history -a;$PROMPT_COMMAND"
+#else
      export HISTTIMEFORMAT="%F %T: "
      # Set root bash history file and command prompt to allow to send commands to
      # secondary logging and make variables read only.
      #
      # Make sure the command trace directory exists and that it has the proper access.
-     if [ ! -d /root/.bash_sessions ]
+     if [ ! -d ~/.bash_sessions.d ]
      then
-          mkdir -m 640 /root/.bash_sessions
+          mkdir -m 640 ~/.bash_sessions.d
      else
-          chmod 640 /root/.bash_sessions
+          chmod 640 ~/.bash_sessions.d
      fi
      # Set and Export root bash history variables.
-     export HISTFILE=/root/.bash_sessions/.history_`who am i|awk '{ print $1}'`
+     export HISTFILE=~/.bash_sessions.d/.history_`who am i | awk '{gsub(/\//, "", $2)} { print $1 "-" $2 }'`
      export PROMPT_COMMAND="history -a >(tee -a $HISTFILE | logger -pauthpriv.info -t 'user=`who am i | awk '{ print $1}'` as_user=$USER proc=$$ connection=`echo $(tty)| sed -e "s:/dev/::"` cmd=');$PROMPT_COMMAND"
      # Make some variables read only to make it a bit harder to bypass history logging.
      typeset -r HISTCONTROL
@@ -44,5 +45,5 @@ else
      typeset -r HISTSIZE
      typeset -r HISTTIMEFORMAT
      typeset -r PROMPT_COMMAND
-fi
+#fi
 # vim:ts=4:sw=4
